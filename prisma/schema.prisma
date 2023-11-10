@@ -8,15 +8,15 @@ datasource db {
 }
 
 model Recipes {
-  recipe_id       String    @id 
   name            String
-  main_ingredient String
-  is_veg          Boolean
-  time            Int
+  category        String[]
   description     String
   instructions    String
-  category        String[]
+  is_veg          Boolean
+  main_ingredient String
+  recipe_id       String        @id
   tags            String[]
+  time            Int
   Ingredients     Ingredients[]
   Youtube         Youtube?
 }
@@ -30,12 +30,11 @@ model Ingredients {
 }
 
 model Youtube {
-  youtube_id String     @id
+  youtube_id String  @id
   name       String
   language   String
   country    String?
-  state     String?
-  recipe_id  String     @unique
+  recipe_id  String  @unique
+  state      String?
   Recipes    Recipes @relation(fields: [recipe_id], references: [recipe_id])
 }
-

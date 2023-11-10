@@ -3,6 +3,12 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './swagger/swagger'; // Import your Swagger configuration
 import recipeRoutes from './routes/recipeRoutes'; // Import your route handling file
 // import demoRoutes from './swagger/models/recipe'; // Import your route handling file
+// import { config } from 'dotenv'
+// config({ path: '../env' })
+
+import { PrismaClient, PrismaPromise, Recipes } from '@prisma/client';
+const prisma = new PrismaClient();
+
 
 const app: Application = express();
 const port: number = 3000;
@@ -15,7 +21,13 @@ app.use(recipeRoutes);
 // Serve Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+
+
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
+
+

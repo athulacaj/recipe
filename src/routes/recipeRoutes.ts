@@ -4,10 +4,12 @@ import { Router, Request, Response } from 'express';
 import RecipeController from '../controllers/recipeController';
 import RecipeService from '../services/recipeService';
 import { makeHttpRequest } from '../utils/functions/httpFunctions';
+import RecipeRepository from '../repository/recipeRepository';
+import paginationMiddleware from '../middlewares/paginationMiddleware';
 
 const router = Router();
 const recipeController=new RecipeController(
-  new RecipeService()
+  new RecipeService(new RecipeRepository())
 );
 
 /**
@@ -22,7 +24,7 @@ const recipeController=new RecipeController(
  *       200:
  *         description: A list of resources
  */
-router.get('/api/recipes', async (req: Request, res: Response) => {
+router.get('/api/recipes',paginationMiddleware, async (req: Request, res: Response) => {
   const response=await recipeController.getAllrecipes(makeHttpRequest(req));
   res.status(response.statusCode).json(response.body);
 });
