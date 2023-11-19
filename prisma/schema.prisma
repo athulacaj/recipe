@@ -7,34 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Recipes {
-  name            String
-  category        String[]
-  description     String
-  instructions    String
-  is_veg          Boolean
-  main_ingredient String
-  recipe_id       String        @id
-  tags            String[]
-  time            Int
-  Ingredients     Ingredients[]
-  Youtube         Youtube?
+model Recipe {
+  id               String          @id
+  name             String
+  category         String[]
+  tags             String[]
+  mainIngredient   String
+  isVeg            Boolean
+  preparationTime  Int
+  description      String
+  rating           Float @default(0)
+  Youtube          Youtube?
+  ingredients      Ingredient[]
+  instructions     Instruction[]
 }
 
-model Ingredients {
-  ingredient_id Int     @id @default(autoincrement())
-  recipe_id     String
-  name          String
-  quantity      String
-  Recipes       Recipes @relation(fields: [recipe_id], references: [recipe_id])
+model Ingredient {
+  id                  Int     @id @default(autoincrement())
+  name                String
+  quantity            String
+  isOptional          Boolean
+  IngredientsCategory String
+  recipeId            String
+  recipe              Recipe  @relation(fields: [recipeId], references: [id])
+}
+
+model Instruction {
+  id        Int    @id @default(autoincrement())
+  timestamp Float
+  step      String
+  recipeId  String
+  recipe    Recipe @relation(fields: [recipeId], references: [id])
+}
+
+model MainIngredient {
+  id      String      @id 
 }
 
 model Youtube {
-  youtube_id String  @id
+  id String  @id
   name       String
   language   String
   country    String?
-  recipe_id  String  @unique
+  recipeId   String  @unique
   state      String?
-  Recipes    Recipes @relation(fields: [recipe_id], references: [recipe_id])
+  Recipe     Recipe  @relation(fields: [recipeId], references: [id])
 }

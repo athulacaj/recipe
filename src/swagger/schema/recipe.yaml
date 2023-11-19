@@ -1,8 +1,64 @@
-
 components:
   schemas:
     Recipe:
       type: object
       properties:
-          name:
+        name:
+          type: string
+        category:
+          type: array
+          items:
             type: string
+        tags:
+          type: array
+          items:
+            type: string
+        mainIngredient:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+        instructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Instruction'
+        isVeg:
+          type: boolean
+        preparationTime:
+          type: integer
+        description:
+          type: string
+        id:
+          type: string
+        rating:
+          type: integer
+        youtube:
+          type: object
+          properties:
+            name:
+              type: string
+            id:
+              type: string
+            language:
+              type: string
+            country:
+              type: string
+    Ingredient:
+      type: object
+      properties:
+        name:
+          type: string
+        quantity:
+          type: string
+        isOptional:
+          type: boolean
+        IngredientsCategory:
+          type: string
+    Instruction:
+      type: object
+      properties:
+        timestamp:
+          type: number
+        step:
+          type: string

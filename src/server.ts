@@ -5,8 +5,9 @@ import recipeRoutes from './routes/recipeRoutes'; // Import your route handling 
 // import demoRoutes from './swagger/models/recipe'; // Import your route handling file
 // import { config } from 'dotenv'
 // config({ path: '../env' })
+import recipeGrapController from './graphql/recipeGraphController'; // Import your route handling file
 
-import { PrismaClient, PrismaPromise, Recipes } from '@prisma/client';
+import { PrismaClient, PrismaPromise } from '@prisma/client';
 const prisma = new PrismaClient();
 
 
@@ -15,6 +16,7 @@ const port: number = 3000;
 
 // Use the route handling file
 app.use(recipeRoutes);
+app.use(recipeGrapController);
 // app.use(demoRoutes);
 
 

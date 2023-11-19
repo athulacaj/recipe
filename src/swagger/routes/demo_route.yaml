@@ -1,38 +1,44 @@
-
-/api/demo:
-  get:
-    tags:
-      - Recipes
-    summary: this is a demo
-    requestBody:
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Recipe"
-    responses:
-      '200':
-        description: Recipe created successfully
-
-  post:
-    tags:
-      - Recipes
-    summary: this is a demo
-    requestBody:
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Recipe"
-    responses:
-      '200':
-        description: Recipe created successfully
-
-
-
-
 components:
   schemas:
-    Demo:
+    Recipe:
       type: object
       properties:
-          name:
-            type: string
+        # ... (definition of Recipe schema)
+  examples:
+    PepperChickenRoast:
+      value:
+        name: "Pepper Chicken Roast"
+        category:
+          - "Main Course"
+          - "Chicken"
+        tags:
+          - "Spicy"
+          - "Restaurant-style"
+          - "Indian Cuisine"
+        mainIngredient: "Chicken"
+        ingredients:
+          - name: "Onion"
+            quantity: "4 thin slices"
+            isOptional: false
+            IngredientsCategory: "Vegetables"
+          - name: "Curry Leaves"
+            quantity: "6 stems"
+            isOptional: false
+            IngredientsCategory: "Herbs"
+          # ... (other ingredients)
+        instructions:
+          - timestamp: 88.676
+            step: "Marinate the chicken with Kashmiri chilly powder, salt, turmeric, and ginger-garlic paste. Rest for 30 minutes."
+          - timestamp: 111.318
+            step: "Roast coriander seeds, peppercorns, and dry red chilies. Crush the roasted spices coarsely."
+          # ... (other instructions)
+        isVeg: false
+        preparationTime: 60
+        description: "Pepper chicken roast, a flavorful Indian-style dish, is a tasty, spicy chicken roast resembling the restaurant-quality flavor."
+        id: "yZ809bnDqRI"
+        rating: 416
+        youtube:
+          name: "Easy Pepper Chicken Roast Recipe Malaylam | Restaurant style Spicy pepper chicken recipe."
+          id: "yZ809bnDqRI"
+          language: "malayalam"
+          country: "india"

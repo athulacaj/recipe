@@ -1,59 +1,39 @@
-import { PrismaClient } from '@prisma/client'
-import recipeObj from './data'
+import { PrismaClient } from '@prisma/client';
+import  express  from 'express';
+import { graphqlHTTP } from 'express-graphql';
+import { makeExecutableSchema } from '@graphql-tools/schema';
 
+const prisma = new PrismaClient();
 
-console.log("node start");
-
-const prisma = new PrismaClient({
-  log: ['error'],
-});
-
-
-
-
-
-
-async function insert(){
-  for(var recipe of recipeObj["items"]){
-     await prisma.recipes.create({
-      data:{
-        recipe_id:recipe["yt_id"],
-        name:recipe["name"],
-        is_veg:recipe['isVeg'],
-        time:recipe["time"],
-        description:recipe["description"],
-        instructions:recipe["instructions"].join("\n"),
-        category:recipe["category"].map(e=>e.toLowerCase()),
-        tags:recipe["tags"].map(e=>e.toLowerCase()),
-        main_ingredient:recipe["mainIngredient"].toLowerCase(),
-        Ingredients:{
-          create:recipe["ingredients"],
-        },
-        Youtube:{
-          create:{
-            youtube_id:recipe["youtube"]["id"],
-            name:recipe["youtube"]["name"],
-            language:recipe["youtube"]["language"].toLowerCase(),
-            country:recipe["youtube"]["country"].toLowerCase()
-          }
-        }
-      }
-     })
+const typeDefs = `
+  type Recipe {
+    name: String
+    instructions:String
   }
 
+  type Query {
+    allRecipes: [Recipe!]!
+  }
+`;
 
-//   console.log(result)
-}9040
+const resolvers = {
+  Query: {
+    allRecipes: () => {
+      return prisma.recipes.findMany()
+    }
+  }
+};
 
+export const schema = makeExecutableSchema({
+  resolvers,
+  typeDefs,
+});
 
+const app = express();
+app.use('/graphql', graphqlHTTP({
+  schema,
+}));
 
-// insert()
-//   .then(async () => {
-//     // console.log('success')
-//     await prisma.$disconnect()
-//   })
-//   .catch(async (e) => {
-//     // console.error(e)
-//     await prisma.$disconnect()
-//     process.exit(1)
-//   })
+app.listen(4000,()=>{
+    console.log("server is running on port 4000");
+});
