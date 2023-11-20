@@ -1,9 +1,11 @@
 import RecipeService from "../services/recipeService";
-import { requestToHttpResponseMapper } from "../utils/functions/httpMapper";
+import { requestToHttpResponseMapper } from "../utils/mapper/httpMapper";
 import { HttpRequest, HttpResponse } from "../utils/types/serverTypes";
 import {  RecipeType } from "../utils/types/recipeTypes";
-import { RecipeSchema, RecipeSchemaArray } from "../utils/functions/recipeMapper";
-import { RecipeFilter } from "../utils/types/recipeFilterTypes";
+import { RecipeTypeMapper, RecipeTypeArrayMapper, MainIngredientTypeMapper } from "../utils/mapper/recipeMapper";
+import { RecipeFilterFilterType } from "../utils/types/recipeFilterTypes";
+import { RecipeFilterFilterTypeMapper } from "../utils/mapper/recipeFilterMapper";
+import { getJoiValidationErrorIfExists } from "../utils/functions/requestHandleFunction";
 
 class RecipeController {
   constructor(
@@ -11,26 +13,18 @@ class RecipeController {
   ) { }
 
   async getAllrecipes(req: HttpRequest): Promise<HttpResponse> {
-    console.log("req.query",req.query);
     try {
-      // parse json
-      var andJson;
-      var orJson;
-      try{
-        andJson=JSON.parse(req.query.and??"{}");
-      }catch(e){
-
-      }
-      console.log("andJson",andJson);
-      const recipeFilter:RecipeFilter={
-        and:andJson,
-      };
-      const recipes=await this.recipeService.getAllRecipe();
+      const body=req.body;
+      const { error, value } = RecipeFilterFilterTypeMapper.validate(body);
+      const validationErrorMsg=getJoiValidationErrorIfExists(error);
+      if(validationErrorMsg)
+        return requestToHttpResponseMapper(400,{msg:validationErrorMsg})
+      const recipes=await this.recipeService.getAllRecipe(value);
       return requestToHttpResponseMapper(200,{data:recipes})
     } catch(e){
         console.log(e);
+        return requestToHttpResponseMapper(400, { "msg": e});
     }
-    return requestToHttpResponseMapper(500, { "msg": "error" });
   }
 
 
@@ -53,19 +47,19 @@ class RecipeController {
       var recipeObj:RecipeType|RecipeType[];
       var errObj;
       if(Array.isArray(body)){
-        const { error, value } = RecipeSchemaArray.validate(body);
+        const { error, value } = RecipeTypeArrayMapper.validate(body);
         recipeObj=value;
         errObj=error;
       }else{
-        const { error, value } = RecipeSchema.validate(body);
+        const { error, value } = RecipeTypeMapper.validate(body);
         errObj=error;
         recipeObj=value;
       }
-      if(errObj){
-        console.log("errObj",errObj);
-        const errorMessages = errObj.details.map(detail => detail.message);
-        console.error('Validation Error:', errorMessages);
-        return requestToHttpResponseMapper(400,{msg:errorMessages.join(",")})
+
+      
+      const validationErrorMsg=getJoiValidationErrorIfExists(errObj);
+      if(validationErrorMsg){
+        return requestToHttpResponseMapper(400,{msg:validationErrorMsg})
       }else{
         const [resultList,errorList]=await this.recipeService.addRecipe(recipeObj);
         if(resultList.length==0){
@@ -77,6 +71,22 @@ class RecipeController {
     } catch(e){
         console.log(e);
         return requestToHttpResponseMapper(400, { "msg": "error" });
+    }
+  }
+
+  async addMainIngredient(req: HttpRequest): Promise<HttpResponse> {
+    try{
+      const body=req.body;
+      const { error, value } = MainIngredientTypeMapper.validate(body);
+      const validationErrorMsg=getJoiValidationErrorIfExists(error);
+      if(validationErrorMsg)
+        return requestToHttpResponseMapper(400,{msg:validationErrorMsg})
+      const [resultObj,errorObj]=await this.recipeService.addMainIngredient(value);
+      if(errorObj)
+        return requestToHttpResponseMapper(400,{msg:"succesfully added",data:errorObj})
+      return requestToHttpResponseMapper(200,{msg:"succesfully added",data:resultObj})
+    }catch(e){
+      return requestToHttpResponseMapper(400, { "msg": e });
     }
   }
 }

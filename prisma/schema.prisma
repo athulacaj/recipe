@@ -12,14 +12,15 @@ model Recipe {
   name             String
   category         String[]
   tags             String[]
-  mainIngredient   String
+  mainIngredient   String 
   isVeg            Boolean
   preparationTime  Int
   description      String
   rating           Float @default(0)
-  Youtube          Youtube?
+  youtube          Youtube?
   ingredients      Ingredient[]
   instructions     Instruction[]
+  createdAt        DateTime        @default(now())
 }
 
 model Ingredient {
@@ -27,7 +28,7 @@ model Ingredient {
   name                String
   quantity            String
   isOptional          Boolean
-  IngredientsCategory String
+  ingredientCategory String
   recipeId            String
   recipe              Recipe  @relation(fields: [recipeId], references: [id])
 }

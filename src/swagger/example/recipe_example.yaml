@@ -1,9 +1,4 @@
 components:
-  schemas:
-    Recipe:
-      type: object
-      properties:
-        # ... (definition of Recipe schema)
   examples:
     PepperChickenRoast:
       value:

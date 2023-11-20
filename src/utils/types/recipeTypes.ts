@@ -13,7 +13,7 @@ interface IngredientType{
     name: string;
     quantity: string;
     isOptional: boolean;
-    IngredientsCategory: string;
+    ingredientCategory: string;
     recipeId?: string;
     recipe: RecipeType;
 }

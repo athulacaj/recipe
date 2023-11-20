@@ -1,5 +1,5 @@
 import { Ingredient, Prisma, PrismaClient, PrismaPromise, Recipe } from '@prisma/client';
-import { IngredientFilter } from '../utils/types/recipeFilterTypes';
+import { IngredientFilterType } from '../utils/types/recipeFilterTypes';
 const prisma = new PrismaClient();
 
 
@@ -30,6 +30,13 @@ class RecipeRepository {
             data:recipe
         })       
     }
+
+    async addMainIngredient(mainIngredientList:Prisma.MainIngredientCreateManyInput | Prisma.MainIngredientCreateManyInput[]): Promise<Prisma.BatchPayload> {
+        return  prisma.mainIngredient.createMany({
+            data:mainIngredientList
+        })   
+    }
+    
 }
 
 export default RecipeRepository;

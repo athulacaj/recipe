@@ -1,0 +1,41 @@
+/api/getRecipes:
+  post:
+    tags:
+     - Recipes
+    summary: Get a list of recipes
+    description: Returns a list of resources.
+    # parameters:
+    #  - in: query
+    #    name: and
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/RecipeFilter"
+    responses:
+      200:
+        description: A list of resources
+
+
+/api/addrecipe:
+  post:
+    tags:
+      - Recipes
+    summary: Create a new recipe
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Recipe"
+    responses:
+      '200':
+        description: Recipe created successfully
+        content:
+         application/json:
+          schema:
+           $ref: "#/components/schemas/Recipe"
+          examples:
+           PepperChickenRoast:
+             $ref: '#/components/examples/PepperChickenRoast'
+      '400':
+        description: Bad request

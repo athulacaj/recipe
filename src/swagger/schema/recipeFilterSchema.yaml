@@ -1,0 +1,13 @@
+components:
+  schemas:
+    RecipeFilter:
+      type: object
+      properties:
+        and:
+          type: object
+          properties:
+            mainIngredient:
+              type: string
+            isVeg:
+              type: boolean
+            

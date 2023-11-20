@@ -1,21 +1,27 @@
 import { Ingredient, Prisma, Recipe } from "@prisma/client";
 import RecipeRepository from "../repository/recipeRepository"
-import { IngredientFilter, RecipeFilter } from "../utils/types/recipeFilterTypes";
+import { IngredientFilterType, RecipeFilterFilterType } from "../utils/types/recipeFilterTypes";
 import { RecipeType } from "../utils/types/recipeTypes";
 
 class RecipeService {
    constructor(private readonly recipeRepository: RecipeRepository) { }
-   async getAllRecipe(recipeFilter?: RecipeFilter): Promise<Array<Recipe>> {
+   async getAllRecipe(recipeFilter?: RecipeFilterFilterType): Promise<Array<Recipe>> {
       var whereObj: Prisma.RecipeWhereInput = {}
       if (recipeFilter != null) {
          if (recipeFilter.and) {
             const { mainIngredient, isVeg } = recipeFilter.and;
-            if (mainIngredient) whereObj.mainIngredient = mainIngredient;
+            if (mainIngredient) whereObj.mainIngredient = {
+               contains: mainIngredient,
+               mode: "insensitive"
+            };
             if (isVeg) whereObj.isVeg = isVeg;
          }
       }
+      console.log("mainIngredient", whereObj);
       var includeObj: Prisma.RecipeInclude = {
-         ingredients: true
+         ingredients: true,
+         instructions: true,
+         youtube: true
       };
       const recipes: Array<Recipe> = await this.recipeRepository.getAllRecipe(whereObj, includeObj);
       return recipes;
@@ -25,7 +31,7 @@ class RecipeService {
       var possibleRecipeIdList: Array<string> = [];
       var ingredients: Array<Ingredient> = [];
       for (let i = 0; i < ingredientList.length; i++) {
-         const filter: IngredientFilter = {
+         const filter: IngredientFilterType = {
             name: ingredientList[i]
          };
 
@@ -47,7 +53,7 @@ class RecipeService {
       return ingredients;
    }
 
-   async getRecipeFromIngredientFilter(filter: IngredientFilter, inCludeRecipes: boolean): Promise<Array<Ingredient>> {
+   async getRecipeFromIngredientFilter(filter: IngredientFilterType, inCludeRecipes: boolean): Promise<Array<Ingredient>> {
       var whereObj: Prisma.IngredientWhereInput = {}
       whereObj = {
          name: {
@@ -92,7 +98,7 @@ class RecipeService {
          instructions: {
              create: recipe.instructions,
          },
-         Youtube:{
+         youtube:{
              create:recipe.youtube
          }
      }));
@@ -111,6 +117,22 @@ class RecipeService {
      }
 
       return [resultList,errorList];
+   }
+
+   async addMainIngredient(mainIngredientList: string[]): Promise<[Object|undefined,Object|undefined]> {
+      const mainIngredientObjList: Prisma.MainIngredientCreateManyInput[] = mainIngredientList.map((mainIngredient) => ({
+         id: mainIngredient.toLowerCase(),
+      }));
+      var errorObj: Object|undefined;
+      var resultObj: Object|undefined = {};
+      await this.recipeRepository.addMainIngredient(mainIngredientObjList).then((res) => {
+         console.log("res", res);
+         resultObj = res;
+      }).catch((err) => {
+         console.log("err from prisma", err);
+         errorObj={ msg: err.message, meta: err.meta };
+      })
+      return [resultObj,errorObj];
    }
 }
 
