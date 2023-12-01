@@ -9,7 +9,7 @@ import recipeGrapController from './graphql/recipeGraphController'; // Import yo
 
 
 
-export const app: Application = express();
+ const app: Application = express();
 const port: number = 3000;
 config.init();
 console.log(config.databaseUrl);
