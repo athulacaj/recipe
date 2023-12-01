@@ -61,11 +61,11 @@ class RecipeController {
       if(validationErrorMsg){
         return requestToHttpResponseMapper(400,{msg:validationErrorMsg})
       }else{
-        const [resultList,errorList]=await this.recipeService.addRecipe(recipeObj);
-        if(resultList.length==0){
-          return requestToHttpResponseMapper(400,{msg:"error",errorList})
+        const {result,error}=await this.recipeService.addRecipe(recipeObj);
+        if(result==null || result.length==0){
+          return requestToHttpResponseMapper(400,{msg:"error",error})
         }else{
-          return requestToHttpResponseMapper(200,{data:resultList,msg:"done",errorList})
+          return requestToHttpResponseMapper(200,{data:result,msg:"done",error})
         }
       }
     } catch(e){
@@ -81,7 +81,7 @@ class RecipeController {
       const validationErrorMsg=getJoiValidationErrorIfExists(error);
       if(validationErrorMsg)
         return requestToHttpResponseMapper(400,{msg:validationErrorMsg})
-      const [resultObj,errorObj]=await this.recipeService.addMainIngredient(value);
+      const {result: resultObj,error: errorObj}=await this.recipeService.addMainIngredient(value);
       if(errorObj)
         return requestToHttpResponseMapper(400,{msg:"succesfully added",data:errorObj})
       return requestToHttpResponseMapper(200,{msg:"succesfully added",data:resultObj})

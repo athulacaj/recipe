@@ -2,6 +2,7 @@ import { Ingredient, Prisma, Recipe } from "@prisma/client";
 import RecipeRepository from "../repository/recipeRepository"
 import { IngredientFilterType, RecipeFilterFilterType } from "../utils/types/recipeFilterTypes";
 import { RecipeType } from "../utils/types/recipeTypes";
+import { ServiceReturnType } from "../utils/types/serviceTypes";
 
 class RecipeService {
    constructor(private readonly recipeRepository: RecipeRepository) { }
@@ -80,7 +81,7 @@ class RecipeService {
       return ingredients;
    }
 
-   async addRecipe(recipeObj:RecipeType[]|RecipeType): Promise<[Recipe[],[]]> {
+   async addRecipe(recipeObj:RecipeType[]|RecipeType): Promise<ServiceReturnType> {
       const tempRecipeList:RecipeType[]=recipeObj instanceof Array?recipeObj:[recipeObj];
       const recipeObjList:  Prisma.RecipeCreateInput[]=tempRecipeList.map((recipe)=> ({
          id: recipe.id,
@@ -116,15 +117,15 @@ class RecipeService {
       });
      }
 
-      return [resultList,errorList];
+      return {result:resultList,error:errorList};
    }
 
-   async addMainIngredient(mainIngredientList: string[]): Promise<[Object|undefined,Object|undefined]> {
+   async addMainIngredient(mainIngredientList: string[]): Promise<ServiceReturnType> {
       const mainIngredientObjList: Prisma.MainIngredientCreateManyInput[] = mainIngredientList.map((mainIngredient) => ({
          id: mainIngredient.toLowerCase(),
       }));
       var errorObj: Object|undefined;
-      var resultObj: Object|undefined = {};
+      var resultObj: Object|undefined;
       await this.recipeRepository.addMainIngredient(mainIngredientObjList).then((res) => {
          console.log("res", res);
          resultObj = res;
@@ -132,7 +133,7 @@ class RecipeService {
          console.log("err from prisma", err);
          errorObj={ msg: err.message, meta: err.meta };
       })
-      return [resultObj,errorObj];
+      return { result: resultObj,error: errorObj};
    }
 }
 

@@ -2,22 +2,23 @@ import express, { Application } from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './swagger/swagger'; // Import your Swagger configuration
 import recipeRoutes from './routes/recipeRoutes'; // Import your route handling file
-// import demoRoutes from './swagger/models/recipe'; // Import your route handling file
-// import { config } from 'dotenv'
-// config({ path: '../env' })
+import authRoutes from './routes/authRoutes'; // Import your route handling file
+import config from './config';
+
 import recipeGrapController from './graphql/recipeGraphController'; // Import your route handling file
 
-import { PrismaClient, PrismaPromise } from '@prisma/client';
-const prisma = new PrismaClient();
 
 
-const app: Application = express();
+export const app: Application = express();
 const port: number = 3000;
+config.init();
+console.log(config.databaseUrl);
+
 
 // Use the route handling file
 app.use(recipeRoutes);
+app.use(authRoutes);
 app.use(recipeGrapController);
-// app.use(demoRoutes);
 
 
 // Serve Swagger documentation

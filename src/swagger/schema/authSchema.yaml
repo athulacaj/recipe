@@ -1,0 +1,18 @@
+components:
+  schemas:
+    EmailLogin:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    Signup:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string

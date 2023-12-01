@@ -7,6 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String    @id @default(cuid())
+  email     String?    @unique
+  phone     String?    @unique
+  name      String
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  role      Role      @default(USER)
+}
+
+
+
 model Recipe {
   id               String          @id
   name             String
@@ -53,4 +66,10 @@ model Youtube {
   recipeId   String  @unique
   state      String?
   Recipe     Recipe  @relation(fields: [recipeId], references: [id])
+}
+
+
+enum Role{
+  USER
+  ADMIN
 }
