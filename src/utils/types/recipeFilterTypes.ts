@@ -8,10 +8,10 @@ type filter = {
     and?: Columns,
     or?: Columns,
 }
-export type RecipeFilter = filter | null | undefined
+export type RecipeFilterFilterType = filter | null | undefined
 
 
-export type IngredientFilter = {
+export type IngredientFilterType = {
     name: string,
     recipeIdList?: Array<string>
 }

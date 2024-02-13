@@ -14,7 +14,7 @@ const options = {
       },
     ],
   },
-  apis: ['src/routes/*.ts','src/swagger/schema/*','src/swagger/routes/*.yaml'], // Specify the path to your route handling files
+  apis: ['src/routes/*.ts','src/swagger/schema/*','src/swagger/routes/*.yaml','src/swagger/example/*.yaml'], // Specify the path to your route handling files
 };
 
 const swaggerSpec = swaggerJSDoc(options);

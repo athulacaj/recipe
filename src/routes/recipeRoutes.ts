@@ -1,9 +1,9 @@
 // src/routes/resourceRoutes.ts
 
-import { Router, Request, Response } from 'express';
+import {json,Router, Request, Response } from 'express';
 import RecipeController from '../controllers/recipeController';
 import RecipeService from '../services/recipeService';
-import { makeHttpRequest } from '../utils/functions/httpFunctions';
+import { requestToHttpRequestMapper,requestToHttpResponseMapper } from '../utils/mapper/httpMapper';
 import RecipeRepository from '../repository/recipeRepository';
 import paginationMiddleware from '../middlewares/paginationMiddleware';
 
@@ -12,47 +12,25 @@ const recipeController=new RecipeController(
   new RecipeService(new RecipeRepository())
 );
 
-/**
- * @swagger
- * /api/recipes:
- *   get:
- *     tags:
- *      - Recipes
- *     summary: Get a list of recipes
- *     description: Returns a list of resources.
- *     responses:
- *       200:
- *         description: A list of resources
- */
-router.get('/api/recipes',paginationMiddleware, async (req: Request, res: Response) => {
-  const response=await recipeController.getAllrecipes(makeHttpRequest(req));
+router.use(json())
+
+
+router.post('/api/getRecipes', async (req: Request, res: Response) => {
+  const response=await recipeController.getAllrecipes(requestToHttpRequestMapper(req));
   res.status(response.statusCode).json(response.body);
 });
 
 
 
-/**
- * @swagger
- * /api/recipes:
- *   post:
- *     tags:
- *       - Recipes
- *     summary: Create a new recipe
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             $ref: "#/components/schemas/Recipe"
- *     responses:
- *       '200':
- *         description: Recipe created successfully
- * 
- */
 
-router.post('/api/recipe', (req: Request, res: Response) => {
+
+router.post('/api/addrecipe', async(req: Request, res: Response) => {
   // Your API logic here
-  res.json({ resources: [] });
+  const response=await recipeController.addRecipe(requestToHttpRequestMapper(req));
+  res.status(response.statusCode).json(response.body);
 });
+
+
 
 
 

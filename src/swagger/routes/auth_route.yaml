@@ -1,0 +1,33 @@
+/api/emailLogin:
+  post:
+    tags:
+     - Auth
+    summary: Login with email and password
+    description: Returns a User object
+    # parameters:
+    #  - in: query
+    #    name: and
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/EmailLogin"
+    responses:
+      200:
+        description: 
+
+/api/signup:
+  post:
+    tags:
+     - Auth
+    summary: Signup with email and password
+    description: Returns a User object
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Signup"
+    responses:
+      200:
+        description: 
+

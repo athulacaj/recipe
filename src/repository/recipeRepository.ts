@@ -1,32 +1,42 @@
-import { Ingredients, Prisma, PrismaClient, PrismaPromise, Recipes } from '@prisma/client';
-import { IngredientFilter } from '../utils/types/recipeFilterTypes';
+import { Ingredient, Prisma, PrismaClient, PrismaPromise, Recipe } from '@prisma/client';
+import { IngredientFilterType } from '../utils/types/recipeFilterTypes';
 const prisma = new PrismaClient();
 
 
 
 class RecipeRepository {
-    async getAllRecipe(whereObj?:Prisma.RecipesWhereInput,includeObj?:Prisma.RecipesInclude ): Promise<Array<Recipes>> {
-        const recipes = prisma.recipes.findMany(
+    async getAllRecipe(whereObj?:Prisma.RecipeWhereInput,includeObj?:Prisma.RecipeInclude,skip?:number,limit?:number): Promise<Array<Recipe>> {
+        return prisma.recipe.findMany(
             {
                 include: includeObj,
                 where: whereObj,
-                skip: 0,
-                take: 100,
+                skip: skip,
+                take: limit,
             }
         );
-        return recipes;
     }
 
-    async getRecipeFromIngredients(whereObj?:Prisma.IngredientsWhereInput,includeObj?:Prisma.IngredientsInclude): Promise<Array<Ingredients>> {
-        const ingredients = prisma.ingredients.findMany(
+    async getRecipeFromIngredients(whereObj?:Prisma.IngredientWhereInput,includeObj?:Prisma.IngredientInclude): Promise<Array<Ingredient>> {
+        return  prisma.ingredient.findMany(
             {
                 include:includeObj,
                 where:whereObj
             }
         );
-        return ingredients;
-
     }
+
+    async addRecipe(recipe:Prisma.RecipeCreateInput): Promise<Recipe> {
+        return  prisma.recipe.create({
+            data:recipe
+        })       
+    }
+
+    async addMainIngredient(mainIngredientList:Prisma.MainIngredientCreateManyInput | Prisma.MainIngredientCreateManyInput[]): Promise<Prisma.BatchPayload> {
+        return  prisma.mainIngredient.createMany({
+            data:mainIngredientList
+        })   
+    }
+    
 }
 
 export default RecipeRepository;

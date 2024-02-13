@@ -1,12 +1,12 @@
 import { HttpRequest, HttpResponse } from "../types/serverTypes";
 import { Request } from 'express';
 
- const makeHttpResponse = (statusCode:number,data: Record<string, any>): HttpResponse => ({
+ const requestToHttpResponseMapper = (statusCode:number,data: Record<string, any>): HttpResponse => ({
     body: data,
-    statusCode: 200
+    statusCode: statusCode
   })
 
-const makeHttpRequest= (req: Request) => {
+const requestToHttpRequestMapper= (req: Request) => {
   const httpRequest: HttpRequest = {
     headers:req.headers,
     body: req.body,
@@ -16,4 +16,4 @@ const makeHttpRequest= (req: Request) => {
   return httpRequest;
 }
 
-  export {makeHttpResponse,makeHttpRequest}
+  export {requestToHttpResponseMapper,requestToHttpRequestMapper}
