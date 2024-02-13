@@ -1,6 +1,6 @@
 // src/routes/resourceRoutes.ts
 
-import express,{ Router, Request, Response } from 'express';
+import {json,Router, Request, Response } from 'express';
 import RecipeController from '../controllers/recipeController';
 import RecipeService from '../services/recipeService';
 import { requestToHttpRequestMapper,requestToHttpResponseMapper } from '../utils/mapper/httpMapper';
@@ -12,7 +12,7 @@ const recipeController=new RecipeController(
   new RecipeService(new RecipeRepository())
 );
 
-router.use(express.json())
+router.use(json())
 
 
 router.post('/api/getRecipes', async (req: Request, res: Response) => {

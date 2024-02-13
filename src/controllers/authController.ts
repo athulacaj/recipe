@@ -27,7 +27,7 @@ constructor(
   }
 
   async signup(req: HttpRequest): Promise<HttpResponse> {
-    const { error, value } = EmailSignupTypeMapper.validate(req.body);
+    const { error, value} = EmailSignupTypeMapper.validate(req.body);
     const validationErrorMsg = getJoiValidationErrorIfExists(error);
     if (validationErrorMsg) {
       return requestToHttpResponseMapper(400, { msg: validationErrorMsg });
